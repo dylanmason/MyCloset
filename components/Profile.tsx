@@ -78,7 +78,7 @@ export default function Profile({ route, navigation }:any) {
             ) : (
                 <>
                 <Link justifyItems='center' alignItems='center' position="absolute" top={16} right={30} zIndex={2} onPress={() =>  {
-                    navigation.navigate('Settings');
+                    navigation.navigate('Settings', {profilePicture: profilePicture, userName: userName});
                 }}>
                 <EvilIcons name='pencil' size={36} color='gray' />
                 </Link>
