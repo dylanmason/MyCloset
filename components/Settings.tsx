@@ -7,9 +7,11 @@ import {
     Button,
     Image,
     Box,
+    Input,
 } from "native-base";
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from '@expo/vector-icons';
 
 export default function Settings({ route, navigation }: any) {
     const [image, setImage] = React.useState<string>(route?.params?.profilePicture);
@@ -39,8 +41,13 @@ export default function Settings({ route, navigation }: any) {
 
     return (
         <Box justifyContent='center' alignItems='center' flex={1}>
+        <Link justifyItems='center' alignItems='center' position="absolute" top={20} left={30} zIndex={2} onPress={() =>  {
+            navigation.goBack();
+        }}>
+        <AntDesign name='left' size={25} color='black' />
+        </Link>
         <Box justifyContent='center' alignItems='center'>
-        <VStack space={8} alignItems='center' mb="15%">
+        <VStack space={8} alignItems='center' mb="5%">
         <Link onPress={pickImage}>
         <Box shadow="5">
         <Image size={275} borderRadius={275} alt="img" source={{uri: image}}/>
@@ -49,7 +56,15 @@ export default function Settings({ route, navigation }: any) {
         <Box justifyContent='center'>
         <Text fontSize={30} fontWeight='hairline'>{userName}</Text>
         </Box>
-        <Box justifyContent='center' alignItems='center' mt="25%">
+        <Link onPress={() => navigation.navigate('Username', {userName: userName})}>
+        <Text fontSize={20} fontWeight='hairline'>Change Username</Text>
+        </Link>
+        <Box borderColor="muted.300" borderWidth={1} w={125} mt="-4%" mb="5%"></Box>
+        <Link onPress={() => navigation.navigate('Password', {userName: userName})}>
+        <Text fontSize={20} fontWeight='hairline'>Change Password</Text>
+        </Link>
+        <Box borderColor="muted.300" borderWidth={1} w={125} mt="-4%"></Box>
+        <Box justifyContent='center' alignItems='center' mt="15%">
         <Button bg="red.500" _pressed={{
             bg: "red.500",
             opacity: 0.5,

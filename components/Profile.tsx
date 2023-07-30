@@ -17,9 +17,13 @@ export default function Profile({ route, navigation }:any) {
     const [posts, setPosts] = useState<any>([])
     const [profilePicture, setProfilePicture] = useState<any>("");
     const [userName, setUserName] = useState<any>("");
+    let access = 0;
+
+    access += 1; 
 
     useEffect(() => {
         (async () => {
+            console.log(access);
             const token = await AsyncStorage.getItem('auth');
             setUserName(token);
             const userData = await fetch(`${config.USER_INFO_LOCAL_API}?userName=${userName}`)
@@ -34,7 +38,7 @@ export default function Profile({ route, navigation }:any) {
             setPosts(postJson);
             console.log("posts are:", postJson);
         })();
-    }, [userName]);
+    }, [access]);
 
     const Posts = () => {
         return (

@@ -16,6 +16,8 @@ import SignUp from "./components/SignUp";
 import UserProfile from "./components/UserProfile";
 import Profile from "./components/Profile";
 import Post from "./components/Post";
+import Username from "./components/Username";
+import Password from "./components/Password";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -86,6 +88,8 @@ export default function App() {
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="Post" component={Post} />
         <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="Username" component={Username} />
+        <Stack.Screen name="Password" component={Password} />
         </Stack.Navigator>
         </NavigationContainer>
         </NativeBaseProvider>
