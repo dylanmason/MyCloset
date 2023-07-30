@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { FlatList, StyleSheet } from "react-native";
 import {
     Text,
@@ -11,19 +11,21 @@ import {
 import config from '../config.json';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EvilIcons } from '@expo/vector-icons';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Profile({ route, navigation }:any) {
 
     const [posts, setPosts] = useState<any>([])
     const [profilePicture, setProfilePicture] = useState<any>("");
     const [userName, setUserName] = useState<any>("");
-    let access = 0;
 
-    access += 1; 
+    useFocusEffect(
+      React.useCallback(() => {
+        load();
+      }, [userName])
+    );
 
-    useEffect(() => {
-        (async () => {
-            console.log(access);
+    const load = async () => {
             const token = await AsyncStorage.getItem('auth');
             setUserName(token);
             const userData = await fetch(`${config.USER_INFO_LOCAL_API}?userName=${userName}`)
@@ -37,8 +39,7 @@ export default function Profile({ route, navigation }:any) {
             postJson = postJson.reverse();
             setPosts(postJson);
             console.log("posts are:", postJson);
-        })();
-    }, [access]);
+    }
 
     const Posts = () => {
         return (

@@ -262,7 +262,7 @@ app.get("/api/updateUsername", async (req, res) => {
     });
     if (found !== null) {
       const match = {
-        found: "not available",
+        found: "unavailable",
       };
       res.send(match);
     } else {
