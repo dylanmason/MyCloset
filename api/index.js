@@ -25,7 +25,14 @@ const connectDB = () => {
 connectDB();
 
 const userCluster = new mongoose.Schema(
-  { userName: String, password: String, profilePicture: String },
+  {
+    userName: String,
+    password: String,
+    profilePicture: String,
+    following: [{ _id: false, userName: String }],
+    followers: [{ _id: false, userName: String }],
+    verified: Boolean,
+  },
   { versionKey: false }
 );
 const userDB = mongoose.model("Users", userCluster);
@@ -94,6 +101,9 @@ app.post("/api/userSignUp", (req, res) => {
           userName: req.body.userName,
           password: hash,
           profilePicture: img,
+          following: [],
+          followers: [],
+          verified: false,
         });
       } else {
         const match = {
@@ -314,11 +324,68 @@ app.get("/api/updateProfilePicture", async (req, res) => {
           userName: userName,
           password: found.password,
           profilePicture: newProfilePicture,
+          followers: found.followers,
+          following: found.following,
         }
       );
       console.log("here is the userInfo", userInfo);
       res.send(userInfo);
     }
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
+
+app.get("/api/updateFollowing", async (req, res) => {
+  console.log(req.query);
+  const userName = req.query.userName;
+  const myUserName = req.query.myUserName;
+  const action = req.query.action === 'true';
+  try {
+    const user = await userDB.findOne(
+      { userName: userName }
+    ).lean();
+    const me = await userDB.findOne(
+      { userName: myUserName }
+    ).lean();
+    let meArrayFollowing = me.following;
+    let userArrayFollowers = user.followers;
+    
+    if (action) {
+      const userReq = await userDB.updateOne(
+        { userName: userName },
+        {
+          $set: { followers: [...userArrayFollowers, {userName: myUserName}] },
+        }
+      );
+      const myReq = await userDB.updateOne(
+        { userName: myUserName },
+        {
+          $set: { following: [...meArrayFollowing, {userName: userName}] },
+        }
+      );
+      console.log(userReq);
+      console.log(myReq);
+      console.log("followed");
+    } else {
+      meArrayFollowing = meArrayFollowing.filter((user) => user.userName !== userName);
+      userArrayFollowers = userArrayFollowers.filter((user) => user.userName!== myUserName);
+      await userDB.updateOne(
+        { userName: userName },
+        {
+          $set: { followers: userArrayFollowers },
+        }
+      );
+      await userDB.updateOne(
+        { userName: myUserName },
+        {
+          $set: { following: meArrayFollowing },
+        }
+      );
+      console.log("unfollowed");
+    }
+  res.send("success");
   } catch (err) {
     console.log(err);
     res.send(err);

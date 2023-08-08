@@ -14,13 +14,16 @@ import {
     KeyboardAvoidingView
 } from "native-base";
 import config from '../config.json';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Search({ navigation }: any) {
-    
+    const [userName, setUserName] = useState<any>("");
     const [users, setUsers] = useState<any>([]);
     const [filtered, setFiltered] = useState<any>([]);
     useEffect(() => {
         (async () => {
+            const token = await AsyncStorage.getItem('auth');
+            setUserName(token);
             const response = await fetch(`${config.GATHERUSERS_LOCAL_API}`);
             const json = await response.json();
             console.log(json);
@@ -35,7 +38,7 @@ export default function Search({ navigation }: any) {
         else {
             let arr:any = [];
             users?.map((item:any) => {
-                if (check(item.userName, text)) {
+                if (check(item.userName, text) && item.userName !== userName) {
                     arr.push({
                         userName: item.userName,
                         profilePicture: item.profilePicture
